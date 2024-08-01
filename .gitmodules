@@ -1,0 +1,6 @@
+[submodule "api/protocol-buffers"]
+	path = api/protocol-buffers
+	url = git@github.com:lingua-leap/protocol-buffers.git
+[submodule "protocol-buffers"]
+	path = protocol-buffers
+	url = git@github.com:lingua-leap/protocol-buffers.git

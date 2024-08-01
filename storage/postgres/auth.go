@@ -1,8 +1,7 @@
-package postgresStorage
+package postgres
 
 import (
 	"authentication-service/models"
-	"authentication-service/storage"
 	"database/sql"
 	"fmt"
 
@@ -11,15 +10,15 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type AuthenticationStorage struct {
+type AuthenticationSQLStorage struct {
 	db *sqlx.DB
 }
 
-func NewAuthenticationStorage(db *sqlx.DB) storage.AuthenticationStorage {
-	return &AuthenticationStorage{db}
+func NewAuthenticationSQLStorage(db *sqlx.DB) *AuthenticationSQLStorage {
+	return &AuthenticationSQLStorage{db}
 }
 
-func (a *AuthenticationStorage) Register(user *models.CreateUser) (*models.User, error) {
+func (a *AuthenticationSQLStorage) Register(user *models.CreateUser) (*models.User, error) {
 	_, err := a.GetUserByEmail(user.Email)
 	if err == nil {
 		return nil, fmt.Errorf("EmailAlreadyExists")
@@ -60,7 +59,7 @@ func (a *AuthenticationStorage) Register(user *models.CreateUser) (*models.User,
 	return &createdUser, nil
 }
 
-func (a *AuthenticationStorage) Login(email, password string) (*models.AuthToken, error) {
+func (a *AuthenticationSQLStorage) Login(email, password string) (*models.AuthToken, error) {
 	var user models.User
 	query := `
 	    SELECT id, username, email, password_hash, full_name, native_language, created_at, updated_at
@@ -80,20 +79,20 @@ func (a *AuthenticationStorage) Login(email, password string) (*models.AuthToken
 		return nil, fmt.Errorf("InvalidPassword")
 	}
 
-	token, err := GenerateToken(user.ID)
+	_, err = GenerateToken(user.ID)
 	if err != nil {
 		return nil, fmt.Errorf("Error generating token: %v", err)
 	}
 
-	return &models.AuthToken{Token: token}, nil
+	return &models.AuthToken{Token: "token"}, nil
 }
 
-func (a *AuthenticationStorage) Logout(userID string) error {
+func (a *AuthenticationSQLStorage) Logout(userID string) error {
 	// Implement logout logic, e.g., invalidate the token
 	return nil
 }
 
-func (a *AuthenticationStorage) VerifyToken(token string) (*models.User, error) {
+func (a *AuthenticationSQLStorage) VerifyToken(token string) (*models.User, error) {
 	userID, err := ParseToken(token)
 	if err != nil {
 		return nil, fmt.Errorf("Error verifying token: %v", err)
@@ -117,7 +116,7 @@ func (a *AuthenticationStorage) VerifyToken(token string) (*models.User, error) 
 	return &user, nil
 }
 
-func (a *AuthenticationStorage) GetUserByEmail(email string) (*models.User, error) {
+func (a *AuthenticationSQLStorage) GetUserByEmail(email string) (*models.User, error) {
 	var user models.User
 	query := `
 		SELECT id, username, email, password_hash, full_name, native_language, created_at, updated_at
@@ -146,6 +145,7 @@ func HashPassword(password string) (string, error) {
 }
 
 func CheckPasswordHash(password, hash string) bool {
+	fmt.Println(password, hash)
 	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)); err != nil {
 		return false
 	}

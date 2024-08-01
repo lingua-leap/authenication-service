@@ -15,15 +15,15 @@ type CreateUser struct {
 }
 
 type User struct {
-	ID             uuid.UUID
-	Username       string
-	Email          string
-	PasswordHash   string
-	FullName       string
-	NativeLanguage string
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	DeletedAt      int64
+	ID             uuid.UUID `db:"id"`
+	Username       string    `db:"username"`
+	Email          string    `db:"email"`
+	PasswordHash   string    `db:"password_hash"`
+	FullName       string    `db:"full_name"`
+	NativeLanguage string    `db:"native_language"`
+	CreatedAt      time.Time `db:"created_at"`
+	UpdatedAt      time.Time `db:"updated_at"`
+	DeletedAt      int64     `db:"deleted_at"`
 }
 
 type AuthToken struct {

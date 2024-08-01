@@ -7,11 +7,11 @@ import (
 )
 
 type Config struct {
-	SecretKey      string         `mapstructure:"SECRET_KEY"`
-	Host           string         `mapstructure:"HOST"`
-	GinServerPort  string         `mapstructure:"GIN_SERVER_PORT"`
-	GrpcServerPort string         `mapstructure:"GRPC_SERVER_PORT"`
-	DatabaseConfig PostgresConfig `mapstructure:",squash"`
+	SecretKey       string         `mapstructure:"SECRET_KEY"`
+	Host            string         `mapstructure:"HOST"`
+	GinServerPort   string         `mapstructure:"GIN_SERVER_PORT"`
+	GrpcSserverPort string         `mapstructure:"GRPC_SERVER_PORT"`
+	DatabaseConfig  PostgresConfig `mapstructure:",squash"`
 }
 
 type PostgresConfig struct {

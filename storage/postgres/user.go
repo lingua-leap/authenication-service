@@ -1,35 +1,34 @@
-package postgresStorage
+package postgres
 
 import (
 	"authentication-service/models"
-	"authentication-service/storage"
 
 	"github.com/jmoiron/sqlx"
 )
 
-type UserManagementStorage struct {
+type UserManagementSQLStorage struct {
 	db *sqlx.DB
 }
 
-func NewUserManagementStorage(db *sqlx.DB) storage.UserManagementStorage {
-	return &UserManagementStorage{db}
+func NewUserManagementStorage(db *sqlx.DB) *UserManagementSQLStorage {
+	return &UserManagementSQLStorage{db}
 }
 
-func (s *UserManagementStorage) CreateUser(user *models.CreateUser) (*models.User, error) {
+func (s *UserManagementSQLStorage) CreateUser(user *models.CreateUser) (*models.User, error) {
 	return nil, nil
 }
-func (s *UserManagementStorage) GetUser(id *string, email string, username *string) (*models.User, error) {
-	return nil, nil
-}
-
-func (s *UserManagementStorage) UpdateUser(user *models.User) (*models.User, error) {
+func (s *UserManagementSQLStorage) GetUser(id *string, email string, username *string) (*models.User, error) {
 	return nil, nil
 }
 
-func (s *UserManagementStorage) DeleteUser(id string) error {
+func (s *UserManagementSQLStorage) UpdateUser(user *models.User) (*models.User, error) {
+	return nil, nil
+}
+
+func (s *UserManagementSQLStorage) DeleteUser(id string) error {
 	return nil
 }
 
-func (s *UserManagementStorage) GetAllUsers(page, limit int, query interface{}) ([]models.User, error) {
+func (s *UserManagementSQLStorage) GetAllUsers(page, limit int, query interface{}) ([]models.User, error) {
 	return nil, nil
 }
