@@ -28,3 +28,12 @@ type User struct {
 type AuthToken struct {
 	Token string
 }
+
+type Message struct {
+	Message string `json:"message"`
+}
+
+type UpdatePassword struct {
+	Token       string `json:"token"`
+	NewPassword string `json:"new_password"`
+}

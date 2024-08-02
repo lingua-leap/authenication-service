@@ -1,9 +1,9 @@
 package postgres
 
 import (
-	"authentication-service/models"
-	"database/sql"
-	"fmt"
+	pb "authentication-service/generated/user"
+	"authentication-service/help"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -16,129 +16,80 @@ func NewUserManagementStorage(db *sqlx.DB) *UserManagementSQLStorage {
 	return &UserManagementSQLStorage{db}
 }
 
-func (s *UserManagementSQLStorage) GetUser(id *string, email *string, username *string) (*models.User, error) {
-	var user models.User
-	var query string
-	var err error
+func (u *UserManagementSQLStorage) CreateUser(in *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
+	res := &pb.CreateUserResponse{}
 
-	switch {
-	case id != nil:
-		query = `
-			SELECT id, username, email, password_hash, full_name, native_language, created_at, updated_at
-			FROM users
-			WHERE id = $1 AND deleted_at IS NULL
-			LIMIT 1
-		`
-		err = s.db.Get(&user, query, *id)
-	case email != nil:
-		query = `
-			SELECT id, username, email, password_hash, full_name, native_language, created_at, updated_at
-			FROM users
-			WHERE email = $1 AND deleted_at IS NULL
-			LIMIT 1
-		`
-		err = s.db.Get(&user, query, email)
-	case username != nil:
-		query = `
-			SELECT id, username, email, password_hash, full_name, native_language, created_at, updated_at
-			FROM users
-			WHERE username = $1 AND deleted_at IS NULL
-			LIMIT 1
-		`
-		err = s.db.Get(&user, query, *username)
-	default:
-		return nil, fmt.Errorf("no criteria provided for GetUser")
-	}
-
-	if err == sql.ErrNoRows {
-		return nil, fmt.Errorf("user not found")
-	} else if err != nil {
-		return nil, fmt.Errorf("error fetching user: %v", err)
-	}
-
-	return &user, nil
-}
-
-func (s *UserManagementSQLStorage) UpdateUser(user *models.User) (*models.User, error) {
-	query := `
-		UPDATE users
-		SET full_name = $1, native_language = $2, updated_at = NOW()
-		WHERE id = $3 AND deleted_at = 0
-		RETURNING id, username, email, full_name, native_language, created_at, updated_at
-	`
-
-	row := s.db.QueryRow(query, user.FullName, user.NativeLanguage, user.ID)
-	var updatedUser models.User
-	err := row.Scan(&updatedUser.ID, &updatedUser.Username, &updatedUser.Email,
-		&updatedUser.FullName, &updatedUser.NativeLanguage,
-		&updatedUser.CreatedAt, &updatedUser.UpdatedAt)
-
+	err := u.db.QueryRow(`INSERT INTO users
+    (username, email, password_hash, full_name, native_language)
+    VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+		in.Username, in.Email, in.Password, in.FullName, in.NativeLanguage).Scan(res.Id)
 	if err != nil {
-		return nil, fmt.Errorf("error updating user: %v", err)
-	}
-
-	return &updatedUser, nil
-}
-
-func (s *UserManagementSQLStorage) DeleteUser(id string) error {
-	query := `
-		UPDATE users
-		SET deleted_at = NOW()
-		WHERE id = $1 AND deleted_at IS NULL
-	`
-
-	result, err := s.db.Exec(query, id)
-	if err != nil {
-		return fmt.Errorf("error deleting user: %v", err)
-	}
-
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return fmt.Errorf("error fetching rows affected: %v", err)
-	}
-
-	if rowsAffected == 0 {
-		return fmt.Errorf("user not found or already deleted")
-	}
-
-	return nil
-}
-
-func (s *UserManagementSQLStorage) GetAllUsers(page, limit int, query interface{}) ([]models.User, error) {
-	offset := (page - 1) * limit
-
-	queryString := `
-		SELECT id, username, email, password_hash, full_name, native_language, created_at, updated_at
-		FROM users
-		WHERE deleted_at IS NULL
-		ORDER BY created_at DESC
-		LIMIT $1 OFFSET $2
-	`
-
-	var users []models.User
-	err := s.db.Select(&users, queryString, limit, offset)
-	if err != nil {
-		return nil, fmt.Errorf("error fetching users: %v", err)
-	}
-
-	return users, nil
-}
-
-func (s *UserManagementSQLStorage) GetUserByEmail(email string) (*models.User, error) {
-	var user models.User
-	query := `
-		SELECT id, username, email, password_hash, full_name, native_language, created_at, updated_at
-		FROM users
-		WHERE email = $1 AND deleted_at = 0
-		LIMIT 1
-	`
-
-	err := s.db.Get(&user, query, email)
-	if err == sql.ErrNoRows {
 		return nil, err
-	} else if err != nil {
-		return nil, fmt.Errorf("Error fetching user by email: %v", err)
 	}
 
-	return &user, nil
+	res.Username = in.Username
+	res.Email = in.Email
+	res.FullName = in.FullName
+	res.NativeLanguage = in.NativeLanguage
+	res.CreatedAt = time.Now().Format("2006-01-02 15:04:05")
+
+	return res, nil
+}
+
+func (u *UserManagementSQLStorage) GetUserProfile(in *pb.UserId) (*pb.UserProfile, error) {
+	res := &pb.UserProfile{}
+
+	err := u.db.Get(res, "SELECT * FROM users WHERE id = $1", in.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (u *UserManagementSQLStorage) UpdateUserProfile(in *pb.UpdateUserPRequest) (*pb.UpdateUserPResponse, error) {
+	res := &pb.UpdateUserPResponse{}
+
+	err := u.db.QueryRow(`UPDATE users set username=$1, full_name=$2, native_language=$3
+             WHERE id = $4 RETURNING email`,
+		in.Username, in.FullName, in.NativeLanguage, in.Id).Scan(res.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	res.Username = in.Username
+	res.FullName = in.FullName
+	res.NativeLanguage = in.NativeLanguage
+	res.UpdatedAt = time.Now().Format("2006-01-02 15:04:05")
+
+	return res, nil
+}
+
+func (u *UserManagementSQLStorage) ChangePassword(in *pb.ChangePasswordRequest) (*pb.Success, error) {
+	var res = &pb.Success{}
+	var hashPassword string
+
+	err := u.db.QueryRow("SELECT password_hash FROM users WHERE id = $1", in.Id).Scan(&hashPassword)
+	if err != nil {
+		return nil, err
+	}
+
+	check := help.VerifyPassword(hashPassword, in.OldPassword)
+	if !check {
+		res.Message = "Invalid old password"
+		return res, nil
+	}
+
+	hash, err := help.HashPassword(in.NewPassword)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = u.db.Exec("UPDATE users SET password_hash = $1 WHERE id = $2",
+		hash, in.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }

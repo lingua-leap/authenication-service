@@ -2,7 +2,6 @@ package main
 
 import (
 	configs "authentication-service/config"
-	"authentication-service/storage"
 	"authentication-service/storage/postgres"
 	"log"
 )
@@ -13,7 +12,7 @@ func main() {
 		log.Fatalf("Error initializing config: %v", err)
 	}
 
-	db, err := storage.ConnectPostgres(dbConfig)
+	db, err := postgres.ConnectPostgres(dbConfig)
 	if err != nil {
 		log.Fatalf("Error connecting to database: %v", err)
 	}

@@ -1,8 +1,8 @@
-package storage
+package service
 
 import "authentication-service/models"
 
-type AuthenticationStorage interface {
+type AuthService interface {
 	Register(user *models.CreateUser) (*models.User, error)
 	Login(email, Password string) (*models.AuthToken, error)
 	VerifyToken(token string) (*models.User, error)
