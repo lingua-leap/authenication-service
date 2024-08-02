@@ -7,7 +7,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthenticationSQLStorage struct {
@@ -26,11 +25,6 @@ func (a *AuthenticationSQLStorage) Register(user *models.CreateUser) (*models.Us
 		return nil, fmt.Errorf("Error registering user: %v", err)
 	}
 
-	hashedPassword, err := HashPassword(user.Password)
-	if err != nil {
-		return nil, fmt.Errorf("Error hashing password: %v", err)
-	}
-
 	newUUID := uuid.NewString()
 	query := `
 		INSERT INTO users (
@@ -42,14 +36,14 @@ func (a *AuthenticationSQLStorage) Register(user *models.CreateUser) (*models.Us
 			native_language
 		)
 		VALUES ($1, $2, $3, $4, $5, $6)
-		RETURNING id, username, email, password_hash, full_name, native_language, created_at, updated_at
+		RETURNING id, username, email, full_name, native_language, created_at, updated_at
 	`
 
-	row := a.db.QueryRow(query, newUUID, user.Username, user.Email, hashedPassword, user.FullName, user.NativeLanguage)
+	row := a.db.QueryRow(query, newUUID, user.Username, user.Email, user.HashedPassword, user.FullName, user.NativeLanguage)
 
 	var createdUser models.User
 	err = row.Scan(&createdUser.ID, &createdUser.Username, &createdUser.Email,
-		&createdUser.PasswordHash, &createdUser.FullName, &createdUser.NativeLanguage,
+		&createdUser.FullName, &createdUser.NativeLanguage,
 		&createdUser.CreatedAt, &createdUser.UpdatedAt)
 
 	if err != nil {
@@ -73,10 +67,6 @@ func (a *AuthenticationSQLStorage) Login(email, password string) (*models.AuthTo
 		return nil, fmt.Errorf("InvalidEmail")
 	} else if err != nil {
 		return nil, fmt.Errorf("Error logging in: %v", err)
-	}
-
-	if !CheckPasswordHash(password, user.PasswordHash) {
-		return nil, fmt.Errorf("InvalidPassword")
 	}
 
 	_, err = GenerateToken(user.ID)
@@ -136,21 +126,6 @@ func (a *AuthenticationSQLStorage) GetUserByEmail(email string) (*models.User, e
 }
 
 // Utility functions for password hashing and token management
-func HashPassword(password string) (string, error) {
-	hashPassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
-	if err != nil {
-		return "", err
-	}
-	return string(hashPassword), nil
-}
-
-func CheckPasswordHash(password, hash string) bool {
-	fmt.Println(password, hash)
-	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)); err != nil {
-		return false
-	}
-	return true
-}
 
 func GenerateToken(userID uuid.UUID) (string, error) {
 	// Implement token generation, e.g., using JWT
