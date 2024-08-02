@@ -5,6 +5,7 @@ package user;
 option go_package = "genprotos/user";
 
 service UserService {
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse)
   rpc GetUserProfile(UserId) returns (UserProfile);
   rpc UpdateUserProfile(UpdateUserPRequest) returns (UpdateUserPResponse);
   rpc Logout(Void) returns (Success);
@@ -49,4 +50,21 @@ message Success {
 message ChangePasswordRequest {
   string oldPassword = 1;
   string newPassword = 2;
+}
+
+message CreateUserRequest {
+  string username = 1;
+  string email = 2;
+  string password = 3;
+  string full_name = 4;
+  string native_language = 5;
+}
+
+message CreateUserResponse {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  string full_name = 4;
+  string native_language = 5;
+  string createdAt = 6;
 }
