@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	pb "authentication-service/generated/user"
+	pb "authentication-service/generated/auth"
 	"authentication-service/help"
 	"time"
 
@@ -16,8 +16,8 @@ func NewUserManagementStorage(db *sqlx.DB) *UserManagementSQLStorage {
 	return &UserManagementSQLStorage{db}
 }
 
-func (u *UserManagementSQLStorage) CreateUser(in *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
-	res := &pb.CreateUserResponse{}
+func (u *UserManagementSQLStorage) CreateUser(in *pb.RegisterUserRequest) (*pb.UserResponse, error) {
+	res := &pb.UserResponse{}
 
 	err := u.db.QueryRow(`INSERT INTO users
     (username, email, password_hash, full_name, native_language)
@@ -36,10 +36,10 @@ func (u *UserManagementSQLStorage) CreateUser(in *pb.CreateUserRequest) (*pb.Cre
 	return res, nil
 }
 
-func (u *UserManagementSQLStorage) GetUserProfile(in *pb.UserId) (*pb.UserProfile, error) {
-	res := &pb.UserProfile{}
+func (u *UserManagementSQLStorage) GetUserProfile(in *pb.GetUserProfileRequest) (*pb.UserResponse, error) {
+	res := &pb.UserResponse{}
 
-	err := u.db.Get(res, "SELECT * FROM users WHERE id = $1", in.Id)
+	err := u.db.Get(res, "SELECT * FROM users WHERE id = $1", in.UserId)
 	if err != nil {
 		return nil, err
 	}
@@ -47,34 +47,32 @@ func (u *UserManagementSQLStorage) GetUserProfile(in *pb.UserId) (*pb.UserProfil
 	return res, nil
 }
 
-func (u *UserManagementSQLStorage) UpdateUserProfile(in *pb.UpdateUserPRequest) (*pb.UpdateUserPResponse, error) {
-	res := &pb.UpdateUserPResponse{}
+func (u *UserManagementSQLStorage) UpdateUserProfile(in *pb.UpdateUserProfileRequest) (*pb.UserResponse, error) {
+	res := &pb.UserResponse{}
 
-	err := u.db.QueryRow(`UPDATE users set username=$1, full_name=$2, native_language=$3
-             WHERE id = $4 RETURNING email`,
-		in.Username, in.FullName, in.NativeLanguage, in.Id).Scan(res.Email)
+	err := u.db.QueryRow(`UPDATE users set full_name=$1, native_language=$2
+             WHERE id = $3 RETURNING email`,
+		in.FullName, in.NativeLanguage, in.UserId).Scan(res.Email)
 	if err != nil {
 		return nil, err
 	}
 
-	res.Username = in.Username
 	res.FullName = in.FullName
 	res.NativeLanguage = in.NativeLanguage
-	res.UpdatedAt = time.Now().Format("2006-01-02 15:04:05")
 
 	return res, nil
 }
 
-func (u *UserManagementSQLStorage) ChangePassword(in *pb.ChangePasswordRequest) (*pb.Success, error) {
-	var res = &pb.Success{}
+func (u *UserManagementSQLStorage) ChangePassword(in *pb.ChangeUserPasswordRequest) (*pb.ChangeUserPasswordResponse, error) {
+	var res = &pb.ChangeUserPasswordResponse{}
 	var hashPassword string
 
-	err := u.db.QueryRow("SELECT password_hash FROM users WHERE id = $1", in.Id).Scan(&hashPassword)
+	err := u.db.QueryRow("SELECT password_hash FROM users WHERE id = $1", in.UserId).Scan(&hashPassword)
 	if err != nil {
 		return nil, err
 	}
 
-	check := help.VerifyPassword(hashPassword, in.OldPassword)
+	check := help.VerifyPassword(hashPassword, in.CurrentPassword)
 	if !check {
 		res.Message = "Invalid old password"
 		return res, nil
@@ -86,7 +84,7 @@ func (u *UserManagementSQLStorage) ChangePassword(in *pb.ChangePasswordRequest) 
 	}
 
 	_, err = u.db.Exec("UPDATE users SET password_hash = $1 WHERE id = $2",
-		hash, in.Id)
+		hash, in.UserId)
 	if err != nil {
 		return nil, err
 	}
