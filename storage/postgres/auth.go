@@ -78,7 +78,6 @@ func (a *AuthenticationSQLStorage) Login(email, password string) (*models.AuthTo
 }
 
 func (a *AuthenticationSQLStorage) Logout(userID string) error {
-	// Implement logout logic, e.g., invalidate the token
 	return nil
 }
 
@@ -124,8 +123,6 @@ func (a *AuthenticationSQLStorage) GetUserByEmail(email string) (*models.User, e
 
 	return &user, nil
 }
-
-// Utility functions for password hashing and token management
 
 func GenerateToken(userID uuid.UUID) (string, error) {
 	// Implement token generation, e.g., using JWT

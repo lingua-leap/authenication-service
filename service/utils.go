@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"regexp"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -20,4 +21,22 @@ func CheckPasswordHash(password, hash string) bool {
 		return false
 	}
 	return true
+}
+
+func ValidateEmail(email string) (string, error) {
+	var err error
+	_, err = regexp.MatchString(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`, email)
+	if err != nil {
+		return "", err
+	}
+	return email, nil
+}
+
+func ValidatePassword(password string) (string, error) {
+	var err error
+	_, err = regexp.MatchString(`^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$`, password)
+	if err != nil {
+		return "", err
+	}
+	return password, nil
 }

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"authentication-service/genproto/auth"
+	"authentication-service/generated/auth"
 	"authentication-service/storage"
 	"context"
 	"fmt"

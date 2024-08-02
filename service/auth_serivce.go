@@ -1,10 +1,11 @@
 package service
 
 import (
-	"authentication-service/genproto/auth"
+	"authentication-service/generated/auth"
 	"authentication-service/models"
 	"authentication-service/storage"
 	"context"
+	"log/slog"
 	"time"
 )
 
@@ -12,6 +13,7 @@ type authenticationService struct {
 	authStorage storage.AuthenticationStorage
 	userStorage storage.UserManagementStorage
 	auth.UnimplementedAuthServiceServer
+	log *slog.Logger
 }
 
 func NewAuthenticationService(authStorage storage.AuthenticationStorage, userStorage storage.UserManagementStorage) *authenticationService {
@@ -22,8 +24,22 @@ func NewAuthenticationService(authStorage storage.AuthenticationStorage, userSto
 }
 
 func (a *authenticationService) RegisterUser(ctx context.Context, req *auth.RegisterUserRequest) (*auth.UserResponse, error) {
+
+	e, err := ValidateEmail(req.Email)
+	if e == "" {
+		a.log.Error("Invalid email address", err)
+		return nil, err
+	}
+
+	p, err := ValidatePassword(req.Password)
+	if p == "" {
+		a.log.Error("Invalid password", err)
+		return nil, err
+	}
+
 	hashedPassord, err := HashPassword(req.Password)
 	if err != nil {
+		a.log.Error(err.Error())
 		return nil, err
 	}
 
@@ -84,10 +100,10 @@ func (a *authenticationService) ResetPassword(ctx context.Context, req *auth.Res
 }
 
 func (a *authenticationService) LogoutUser(ctx context.Context, req *auth.LogoutUserRequest) (*auth.LogoutUserResponse, error) {
-	err := a.authStorage.Logout(req.GetToken())
-	if err != nil {
-		return nil, err
-	}
+	// err := a.authStorage.(req.GetToken())
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	return &auth.LogoutUserResponse{}, nil
 }

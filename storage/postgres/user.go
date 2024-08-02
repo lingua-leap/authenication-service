@@ -91,3 +91,5 @@ func (u *UserManagementSQLStorage) ChangePassword(in *pb.ChangeUserPasswordReque
 
 	return res, nil
 }
+
+// func (u *UserManagementSQLStorage) DeleteUser(in *pb.) error
