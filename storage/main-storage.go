@@ -16,3 +16,7 @@ type MainStorageImpl struct {
 func (m *MainStorageImpl) NewUserStorage() UserStorage {
 	return postgres.NewUserRepo(m.db)
 }
+
+func NewMainStorage(db *sqlx.DB) MainStorage {
+	return &MainStorageImpl{db}
+}

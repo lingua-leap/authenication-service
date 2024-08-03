@@ -2,37 +2,38 @@ package main
 
 import (
 	configs "authentication-service/config"
-	postgres2 "authentication-service/storage/postgres"
-	"authentication-service/storagev2/postgres"
+	pb "authentication-service/generated/user"
+	"authentication-service/logs"
+	"authentication-service/service"
+	"authentication-service/storage"
+	"authentication-service/storage/postgres"
+	"google.golang.org/grpc"
 	"log"
+	"net"
 )
 
 func main() {
-	dbConfig, err := configs.GetDatabaseCongig(".")
+	logger := logs.InitLogger()
+
+	config := configs.Load()
+
+	db, err := postgres.ConnectPostgres(config)
 	if err != nil {
-		log.Fatalf("Error initializing config: %v", err)
+		logger.Error("Error connecting to database", "error", err)
+		log.Fatalln(err)
 	}
+	defer db.Close()
 
-	db, err := postgres.ConnectPostgres(dbConfig)
+	usr := service.NewUserService(logger, storage.NewMainStorage(db))
+	serv := grpc.NewServer()
+
+	pb.RegisterUserServiceServer(serv, usr)
+
+	listener, err := net.Listen("tcp", ":8080")
 	if err != nil {
-		log.Fatalf("Error connecting to database: %v", err)
+		logger.Error("Error listening on port 8080", "error", err)
+		log.Fatalln(err)
 	}
-
-	authSQLStorage := postgres2.NewAuthenticationSQLStorage(db)
-	userSQLStorage := postgres.NewUserManagementStorage(db)
-
-	sqlStorage := postgres.NewMainSQLStorage(db, *userSQLStorage, *authSQLStorage)
-
-	defer sqlStorage.CloseDB()
-	// user := models.CreateUser{
-	// 	Email:    "test@example.com",
-	// 	Username: "test",
-	// 	Password: "test123",
-	// }
-
-	cUser, err := sqlStorage.AuthenticationStorage().Login("test@example.com", "test123")
-	if err != nil {
-		log.Fatalf("Error registering user: %v", err)
-	}
-	log.Println(cUser)
+	log.Println("Listening on port 8080")
+	log.Fatal(serv.Serve(listener))
 }

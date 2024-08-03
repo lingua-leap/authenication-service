@@ -8,9 +8,9 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func ConnectPostgres(config *configs.PostgresConfig) (*sqlx.DB, error) {
+func ConnectPostgres(config configs.Config) (*sqlx.DB, error) {
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		config.Host, config.Port, config.User, config.Password, config.Name)
+		config.DB_HOST, config.DB_PORT, config.DB_USER, config.DB_PASSWORD, config.DB_NAME)
 
 	db, err := sqlx.Connect("postgres", psqlInfo)
 	if err != nil {

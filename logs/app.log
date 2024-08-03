@@ -109,3 +109,5 @@
 {"time":"2024-07-31T16:34:13.603253491+05:00","level":"INFO","msg":"Response sent","status":500}
 {"time":"2024-07-31T16:37:03.543726756+05:00","level":"INFO","msg":"Starting auth-service..."}
 {"time":"2024-07-31T16:37:03.550186664+05:00","level":"INFO","msg":"server is running ","PORT":":50050"}
+{"time":"2024-08-03T14:55:00.809486774+05:00","level":"ERROR","msg":"Error connecting to database","error":"pq: password authentication failed for user \"postgres\""}
+{"time":"2024-08-03T14:55:32.629167047+05:00","level":"ERROR","msg":"Error connecting to database","error":"pq: database \"lingua_leap_users\" does not exist"}

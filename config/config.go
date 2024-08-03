@@ -1,66 +1,53 @@
-package configs
+package config
 
 import (
-	"fmt"
+	"log"
+	"os"
 
-	"github.com/spf13/viper"
+	"github.com/joho/godotenv"
+	"github.com/spf13/cast"
+
+	_ "github.com/lib/pq"
 )
 
 type Config struct {
-	SecretKey       string         `mapstructure:"SECRET_KEY"`
-	Host            string         `mapstructure:"HOST"`
-	GinServerPort   string         `mapstructure:"GIN_SERVER_PORT"`
-	GrpcSserverPort string         `mapstructure:"GRPC_SERVER_PORT"`
-	DatabaseConfig  PostgresConfig `mapstructure:",squash"`
+	GIN_SERVER_PORT    string
+	GRPC_SERVER_PORT   string
+	SECRET_KEY_ACCESS  string
+	SECRET_KEY_REFRESH string
+	HOST               string
+	DB_PORT            string
+	DB_HOST            string
+	DB_USER            string
+	DB_PASSWORD        string
+	DB_NAME            string
 }
 
-type PostgresConfig struct {
-	Port     string `mapstructure:"DB_PORT"`
-	Host     string `mapstructure:"DB_HOST"`
-	User     string `mapstructure:"DB_USER"`
-	Password string `mapstructure:"DB_PASSWORD"`
-	Name     string `mapstructure:"DB_NAME"`
-}
-
-func InitConfig(path string) (*Config, error) {
-	var config Config
-	if err := LoadConfig(path, &config); err != nil {
-		return nil, err
-	}
-	return &config, nil
-}
-
-func LoadConfig(path string, config *Config) error {
-	viper.SetConfigName("config")
-	viper.SetConfigType("env")
-	viper.AddConfigPath(path)
-	err := viper.ReadInConfig()
+func Load() Config {
+	err := godotenv.Load(".env")
 	if err != nil {
-		return fmt.Errorf("error reading config file: %v", err)
+		log.Println("No .env file found")
 	}
 
-	viper.SetDefault("SECRET_KEY", "secret-key")
-	viper.SetDefault("HOST", "localhost")
-	viper.SetDefault("GIN_SERVER_PORT", "8081")
-	viper.SetDefault("GRPC_SERVER_PORT", "50051")
-	viper.SetDefault("DB_PORT", "5432")
-	viper.SetDefault("DB_HOST", "localhost")
-	viper.SetDefault("DB_USER", "postgres")
-	viper.SetDefault("DB_PASSWORD", "1702")
-	viper.SetDefault("DB_NAME", "authentication")
+	config := Config{}
 
-	err = viper.Unmarshal(config)
-	if err != nil {
-		return fmt.Errorf("unable to decode into struct: %v", err)
-	}
+	config.GIN_SERVER_PORT = cast.ToString(coalesce("GIN_SERVER_PORT", "8081"))
+	config.GRPC_SERVER_PORT = cast.ToString(coalesce("GRPC_SERVER_PORT", "50050"))
+	config.DB_HOST = cast.ToString(coalesce("DB_HOST", "localhost"))
+	config.DB_PORT = cast.ToString(coalesce("DB_PORT", "5432"))
+	config.DB_NAME = cast.ToString(coalesce("DB_NAME", "ecommerce_auth_service"))
+	config.DB_USER = cast.ToString(coalesce("DB_USER", "postgres"))
+	config.DB_PASSWORD = cast.ToString(coalesce("DB_PASSWORD", "123321"))
+	config.SECRET_KEY_ACCESS = cast.ToString(coalesce("SECRET_KEY_ACCESS", "secret_key"))
+	config.SECRET_KEY_REFRESH = cast.ToString(coalesce("SECRET_KEY_REFRESH", "not so easy"))
 
-	return nil
+	return config
 }
 
-func GetDatabaseCongig(path string) (*PostgresConfig, error) {
-	config, err := InitConfig(path)
-	if err != nil {
-		return nil, err
+func coalesce(env string, defaultValue interface{}) interface{} {
+	value, exists := os.LookupEnv(env)
+	if !exists {
+		return defaultValue
 	}
-	return &config.DatabaseConfig, nil
+	return value
 }

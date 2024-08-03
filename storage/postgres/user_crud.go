@@ -2,7 +2,6 @@ package postgres
 
 import (
 	pb "authentication-service/generated/user"
-	"authentication-service/storage"
 	"github.com/jmoiron/sqlx"
 	"time"
 )
@@ -11,7 +10,7 @@ type UserRepo struct {
 	db *sqlx.DB
 }
 
-func NewUserRepo(sqlx *sqlx.DB) storage.UserStorage {
+func NewUserRepo(sqlx *sqlx.DB) *UserRepo {
 	return &UserRepo{db: sqlx}
 }
 

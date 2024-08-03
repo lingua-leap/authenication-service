@@ -13,7 +13,11 @@ var user storage.MainStorage
 type UserService struct {
 	pb.UnimplementedUserServiceServer
 	log *slog.Logger
-	storage.MainStorage
+	st  storage.MainStorage
+}
+
+func NewUserService(log *slog.Logger, storage storage.MainStorage) *UserService {
+	return &UserService{log: log}
 }
 
 func (u *UserService) CreateUser(ctx context.Context, in *pb.CreateUserRequest) (*pb.UserResponse, error) {
@@ -25,7 +29,7 @@ func (u *UserService) CreateUser(ctx context.Context, in *pb.CreateUserRequest) 
 
 	in.Password = hashedPassword
 
-	res, err := u.NewUserStorage().CreateUser(in)
+	res, err := u.st.NewUserStorage().CreateUser(in)
 	if err != nil {
 		u.log.Error("Failed to create user", "error", err)
 		return nil, err
@@ -34,7 +38,7 @@ func (u *UserService) CreateUser(ctx context.Context, in *pb.CreateUserRequest) 
 }
 
 func (u *UserService) GetUserProfile(ctx context.Context, in *pb.UserId) (*pb.UserResponse, error) {
-	res, err := u.NewUserStorage().GetUserProfile(in)
+	res, err := u.st.NewUserStorage().GetUserProfile(in)
 	if err != nil {
 		u.log.Error("Failed to get user profile", "error", err)
 		return nil, err
@@ -43,7 +47,7 @@ func (u *UserService) GetUserProfile(ctx context.Context, in *pb.UserId) (*pb.Us
 }
 
 func (u *UserService) GetAllUsers(ctx context.Context, in *pb.FilterRequest) (*pb.UsersResponse, error) {
-	res, err := u.NewUserStorage().GetAllUsers(in)
+	res, err := u.st.NewUserStorage().GetAllUsers(in)
 	if err != nil {
 		u.log.Error("Failed to get all users", "error", err)
 		return nil, err
@@ -52,7 +56,7 @@ func (u *UserService) GetAllUsers(ctx context.Context, in *pb.FilterRequest) (*p
 }
 
 func (u *UserService) UpdateUserProfile(ctx context.Context, in *pb.UpdateUserPRequest) (*pb.UpdateUserPResponse, error) {
-	res, err := u.NewUserStorage().UpdateUserProfile(in)
+	res, err := u.st.NewUserStorage().UpdateUserProfile(in)
 	if err != nil {
 		u.log.Error("Failed to update user profile", "error", err)
 		return nil, err
@@ -61,7 +65,7 @@ func (u *UserService) UpdateUserProfile(ctx context.Context, in *pb.UpdateUserPR
 }
 
 func (u *UserService) ChangePassword(ctx context.Context, in *pb.ChangePasswordRequest) (*pb.Success, error) {
-	hash, err := u.NewUserStorage().GetPassword(in)
+	hash, err := u.st.NewUserStorage().GetPassword(in)
 	if err != nil {
 		u.log.Error("Failed to get password", "error", err)
 		return nil, err
@@ -81,7 +85,7 @@ func (u *UserService) ChangePassword(ctx context.Context, in *pb.ChangePasswordR
 
 	in.NewPassword = hashedPassword
 
-	err = u.NewUserStorage().ChangePassword(in)
+	err = u.st.NewUserStorage().ChangePassword(in)
 	if err != nil {
 		u.log.Error("Failed to update user profile", "error", err)
 		return nil, err
@@ -91,7 +95,7 @@ func (u *UserService) ChangePassword(ctx context.Context, in *pb.ChangePasswordR
 }
 
 func (u *UserService) DeleteUser(ctx context.Context, in *pb.UserId) (*pb.Success, error) {
-	err := u.NewUserStorage().DeleteUser(in)
+	err := u.st.NewUserStorage().DeleteUser(in)
 	if err != nil {
 		u.log.Error("Failed to delete user", "error", err)
 		return nil, err
