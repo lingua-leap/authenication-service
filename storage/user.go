@@ -1,11 +1,13 @@
 package storage
 
-import "authentication-service/models"
+import pb "authentication-service/generated/user"
 
-type UserManagementStorage interface {
-	GetUser(id *string, email *string, username *string) (*models.User, error)
-	UpdateUser(user *models.User) (*models.User, error)
-	DeleteUser(id string) error
-	GetAllUsers(page, limit int, query interface{}) ([]models.User, error)
-	GetUserByEmail(email string) (*models.User, error)
+type UserStorage interface {
+	CreateUser(in *pb.CreateUserRequest) (*pb.UserResponse, error)
+	GetUserProfile(in *pb.UserId) (*pb.UserResponse, error)
+	GetAllUsers(in *pb.FilterRequest) (*pb.UsersResponse, error)
+	UpdateUserProfile(in *pb.UpdateUserPRequest) (*pb.UpdateUserPResponse, error)
+	GetPassword(in *pb.ChangePasswordRequest) (string, error)
+	ChangePassword(in *pb.ChangePasswordRequest) error
+	DeleteUser(in *pb.UserId) error
 }

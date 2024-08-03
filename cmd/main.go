@@ -2,7 +2,8 @@ package main
 
 import (
 	configs "authentication-service/config"
-	"authentication-service/storage/postgres"
+	postgres2 "authentication-service/storage/postgres"
+	"authentication-service/storagev2/postgres"
 	"log"
 )
 
@@ -17,7 +18,7 @@ func main() {
 		log.Fatalf("Error connecting to database: %v", err)
 	}
 
-	authSQLStorage := postgres.NewAuthenticationSQLStorage(db)
+	authSQLStorage := postgres2.NewAuthenticationSQLStorage(db)
 	userSQLStorage := postgres.NewUserManagementStorage(db)
 
 	sqlStorage := postgres.NewMainSQLStorage(db, *userSQLStorage, *authSQLStorage)

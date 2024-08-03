@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"regexp"
 
 	"golang.org/x/crypto/bcrypt"
@@ -15,12 +14,9 @@ func HashPassword(password string) (string, error) {
 	return string(hashPassword), nil
 }
 
-func CheckPasswordHash(password, hash string) bool {
-	fmt.Println(password, hash)
-	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)); err != nil {
-		return false
-	}
-	return true
+func CheckPasswordHash(hash, password string) bool {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)) == nil
+
 }
 
 func ValidateEmail(email string) (string, error) {
