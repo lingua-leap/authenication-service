@@ -31,8 +31,8 @@ func Load() Config {
 
 	config := Config{}
 
-	config.GIN_SERVER_PORT = cast.ToString(coalesce("GIN_SERVER_PORT", "8081"))
-	config.GRPC_SERVER_PORT = cast.ToString(coalesce("GRPC_SERVER_PORT", "50050"))
+	config.GIN_SERVER_PORT = cast.ToString(coalesce("GIN_SERVER_PORT", ":8081"))
+	config.GRPC_SERVER_PORT = cast.ToString(coalesce("GRPC_SERVER_PORT", ":50050"))
 	config.DB_HOST = cast.ToString(coalesce("DB_HOST", "localhost"))
 	config.DB_PORT = cast.ToString(coalesce("DB_PORT", "5432"))
 	config.DB_NAME = cast.ToString(coalesce("DB_NAME", "ecommerce_auth_service"))

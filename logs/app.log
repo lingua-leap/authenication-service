@@ -111,3 +111,6 @@
 {"time":"2024-07-31T16:37:03.550186664+05:00","level":"INFO","msg":"server is running ","PORT":":50050"}
 {"time":"2024-08-03T14:55:00.809486774+05:00","level":"ERROR","msg":"Error connecting to database","error":"pq: password authentication failed for user \"postgres\""}
 {"time":"2024-08-03T14:55:32.629167047+05:00","level":"ERROR","msg":"Error connecting to database","error":"pq: database \"lingua_leap_users\" does not exist"}
+{"time":"2024-08-03T23:06:25.01058241+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-03T23:07:14.664441353+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-03T23:14:59.124810427+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}

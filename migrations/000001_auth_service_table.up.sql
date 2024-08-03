@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS users
     native_language VARCHAR(5),
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    deleted_at      BIGINT                   DEFAULT 0
+    deleted_at      BIGINT                   DEFAULT 0,
+    UNIQUE (username, deleted_at)
 );
 
 CREATE TABLE IF NOT EXISTS user_languages

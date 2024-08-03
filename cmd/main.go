@@ -1,15 +1,11 @@
 package main
 
 import (
+	"authentication-service/cmd/server"
 	configs "authentication-service/config"
-	pb "authentication-service/generated/user"
 	"authentication-service/logs"
-	"authentication-service/service"
-	"authentication-service/storage"
 	"authentication-service/storage/postgres"
-	"google.golang.org/grpc"
 	"log"
-	"net"
 )
 
 func main() {
@@ -24,16 +20,10 @@ func main() {
 	}
 	defer db.Close()
 
-	usr := service.NewUserService(logger, storage.NewMainStorage(db))
-	serv := grpc.NewServer()
+	var wait chan struct{}
 
-	pb.RegisterUserServiceServer(serv, usr)
+	go server.GrpcService(logger, db)
+	go server.GinService(logger, db)
 
-	listener, err := net.Listen("tcp", ":8080")
-	if err != nil {
-		logger.Error("Error listening on port 8080", "error", err)
-		log.Fatalln(err)
-	}
-	log.Println("Listening on port 8080")
-	log.Fatal(serv.Serve(listener))
+	<-wait
 }
