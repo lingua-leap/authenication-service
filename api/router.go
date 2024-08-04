@@ -1,8 +1,11 @@
 package api
 
 import (
+	_ "authentication-service/api/docs"
 	"authentication-service/api/handler"
 	"authentication-service/config"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,7 +30,14 @@ func (api *api) Run() error {
 		config.Load().GIN_SERVER_PORT)
 }
 
+// @title Authenfication service
+// @version 1.0
+// @description server for siginIn or signUp
+// @host localhost:8081
+// @BasePath /auth
+// @schemes http
 func (a *api) InitRoutes() {
+	a.router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	auth := a.router.Group("/auth")
 	{
 		auth.POST("/register", a.handler.AuthHandler().RegisterHandler)

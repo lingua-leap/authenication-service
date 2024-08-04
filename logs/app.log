@@ -114,3 +114,11 @@
 {"time":"2024-08-03T23:06:25.01058241+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
 {"time":"2024-08-03T23:07:14.664441353+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
 {"time":"2024-08-03T23:14:59.124810427+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T15:14:04.332838879+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T15:15:41.543288064+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T15:27:13.300892169+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T15:30:25.338518852+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T15:31:20.830887136+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T15:31:35.078032775+05:00","level":"ERROR","msg":"Failed to register user","error":"pq: value too long for type character varying(5)"}
+{"time":"2024-08-04T15:33:18.593287095+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T15:33:33.631969467+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}

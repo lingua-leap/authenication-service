@@ -12,7 +12,7 @@ import (
 type AuthService interface {
 	Register(user models.CreateUser) (models.User, error)
 	Login(login models.LoginRequest) (models.LoginResponse, error)
-	RefreshToken() (models.RefreshResponse, error)
+	RefreshToken(claims *token.Claims) (models.RefreshResponse, error)
 	ResetTokenToEmail(email models.Email) (models.Message, error)
 	RecoveryPassword(password models.UpdatePassword) (models.Message, error)
 }
@@ -77,8 +77,24 @@ func (s *AuthServiceImpl) Login(login models.LoginRequest) (models.LoginResponse
 	return loginRespnse, nil
 }
 
-func (s *AuthServiceImpl) RefreshToken() (models.RefreshResponse, error) {
-	return models.RefreshResponse{}, nil
+func (s *AuthServiceImpl) RefreshToken(claims *token.Claims) (models.RefreshResponse, error) {
+	usr := models.User{
+		ID:       claims.ID,
+		Username: claims.Username,
+		Email:    claims.Username,
+	}
+
+	tk, err := token.GenerateAccessToken(usr)
+	if err != nil {
+		s.logger.Error("Failed to generate access token", "error", err)
+		return models.RefreshResponse{}, err
+	}
+
+	refreshResponse := models.RefreshResponse{
+		AccessToken: tk,
+	}
+
+	return refreshResponse, nil
 }
 func (s *AuthServiceImpl) ResetTokenToEmail(email models.Email) (models.Message, error) {
 	return models.Message{}, nil

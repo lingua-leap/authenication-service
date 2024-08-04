@@ -22,5 +22,5 @@ mig-create-users:
 	migrate create -ext sql -dir db/migrations -seq auth_service_table
 
 swag-gen:
-	~/go/bin/swag init -g api/router.go -o api/handler/docs
+	~/go/bin/swag init -g api/router.go -o api/docs
 #   rm -r db/migrations

@@ -1,0 +1,149 @@
+basePath: /auth
+definitions:
+  models.CreateUser:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      native_language:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  models.Errors:
+    properties:
+      error:
+        type: string
+    type: object
+  models.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  models.LoginResponse:
+    properties:
+      access_token:
+        type: string
+      expires_at:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  models.RefreshResponse:
+    properties:
+      access_token:
+        type: string
+      expires_at:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact: {}
+  description: server for siginIn or signUp
+  title: Authenfication service
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login user
+      parameters:
+      - description: login user
+        in: body
+        name: Login
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Errors'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Errors'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Errors'
+      summary: Login user
+      tags:
+      - Auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Create user
+      parameters:
+      - description: create user
+        in: body
+        name: Register
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Errors'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Errors'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Errors'
+      summary: SigUp user
+      tags:
+      - Auth
+  /verify-token:
+    post:
+      consumes:
+      - application/json
+      description: Get Access token by refresh token
+      parameters:
+      - description: get access token
+        in: body
+        name: Login
+        required: true
+        schema:
+          $ref: '#/definitions/models.RefreshResponse'
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Errors'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Errors'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Errors'
+      summary: Get Access Token user
+      tags:
+      - Auth
+schemes:
+- http
+swagger: "2.0"

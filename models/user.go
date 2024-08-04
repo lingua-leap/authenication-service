@@ -5,11 +5,11 @@ import (
 )
 
 type CreateUser struct {
-	Username       string
-	Email          string
-	HashedPassword string
-	FullName       string
-	NativeLanguage string
+	Username       string `json:"username"`
+	Email          string `json:"email"`
+	HashedPassword string `json:"password"`
+	FullName       string `json:"full_name"`
+	NativeLanguage string `json:"native_language"`
 }
 
 type User struct {
@@ -51,4 +51,8 @@ type UpdatePassword struct {
 
 type Email struct {
 	Email string `json:"email"`
+}
+
+type Errors struct {
+	Error string `json:"error"`
 }
