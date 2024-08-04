@@ -2,8 +2,9 @@ package postgres
 
 import (
 	pb "authentication-service/generated/user"
-	"github.com/jmoiron/sqlx"
 	"time"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type UserRepo struct {
@@ -99,7 +100,7 @@ func (u *UserRepo) GetPassword(in *pb.ChangePasswordRequest) (string, error) {
 
 func (u *UserRepo) ChangePassword(in *pb.ChangePasswordRequest) error {
 
-	_, err := u.db.Exec("UPDATE users SET password_hash = $1 WHERE id = $2",
+	_, err := u.db.Exec("UPDATE users SET password_hash = $1 WHERE email = $2",
 		in.NewPassword, in.Id)
 	if err != nil {
 		return err

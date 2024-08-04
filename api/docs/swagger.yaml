@@ -13,6 +13,11 @@ definitions:
       username:
         type: string
     type: object
+  models.Email:
+    properties:
+      email:
+        type: string
+    type: object
   models.Errors:
     properties:
       error:
@@ -43,6 +48,13 @@ definitions:
       refresh_token:
         type: string
     type: object
+  models.UpdatePassword:
+    properties:
+      new_password:
+        type: string
+      token:
+        type: string
+    type: object
 host: localhost:8081
 info:
   contact: {}
@@ -50,6 +62,36 @@ info:
   title: Authenfication service
   version: "1.0"
 paths:
+  /forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Sending a code to the Email
+      parameters:
+      - description: send a secret token to the email
+        in: body
+        name: Email
+        required: true
+        schema:
+          $ref: '#/definitions/models.Email'
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Errors'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Errors'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Errors'
+      summary: Forgot Password Request
+      tags:
+      - Auth
   /login:
     post:
       consumes:
@@ -112,6 +154,36 @@ paths:
           schema:
             $ref: '#/definitions/models.Errors'
       summary: SigUp user
+      tags:
+      - Auth
+  /reset-password:
+    post:
+      consumes:
+      - application/json
+      description: Verify the password reset instructions
+      parameters:
+      - description: password reset instructions
+        in: body
+        name: UpdatePassword
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdatePassword'
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Errors'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Errors'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Errors'
+      summary: Verify the password reset instructions
       tags:
       - Auth
   /verify-token:

@@ -7,12 +7,14 @@ import (
 	pb "authentication-service/generated/user"
 	"authentication-service/service"
 	"authentication-service/storage"
+	redisr "authentication-service/storage/redis"
 	"fmt"
-	"github.com/jmoiron/sqlx"
-	"google.golang.org/grpc"
 	"log"
 	"log/slog"
 	"net"
+
+	"github.com/jmoiron/sqlx"
+	"google.golang.org/grpc"
 )
 
 func GrpcService(logger *slog.Logger, db *sqlx.DB) {
@@ -37,7 +39,9 @@ func GrpcService(logger *slog.Logger, db *sqlx.DB) {
 func GinService(logger *slog.Logger, db *sqlx.DB) {
 	mainStorage := storage.NewMainStorage(db)
 	authService := service.NewAuthService(logger, mainStorage)
-	handler1 := handler.NewMainHandler(authService)
+	redisConn := redisr.ConnectRedis()
+	userService := service.NewUserService(logger, mainStorage)
+	handler1 := handler.NewMainHandler(authService, redisConn, *userService)
 
 	Api := api.NewAPI(handler1)
 	Api.InitRoutes()

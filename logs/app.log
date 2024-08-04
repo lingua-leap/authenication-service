@@ -122,3 +122,22 @@
 {"time":"2024-08-04T15:31:35.078032775+05:00","level":"ERROR","msg":"Failed to register user","error":"pq: value too long for type character varying(5)"}
 {"time":"2024-08-04T15:33:18.593287095+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
 {"time":"2024-08-04T15:33:33.631969467+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T16:44:27.472996723+05:00","level":"ERROR","msg":"Error connecting to database","error":"pq: password authentication failed for user \"postgres\""}
+{"time":"2024-08-04T16:44:48.157526828+05:00","level":"ERROR","msg":"Error connecting to database","error":"pq: database \"langua_leap_users\" does not exist"}
+{"time":"2024-08-04T16:44:52.004269111+05:00","level":"ERROR","msg":"Error connecting to database","error":"pq: database \"langua_leap_users\" does not exist"}
+{"time":"2024-08-04T16:46:01.303624499+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T18:46:04.543753412+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T18:46:29.981514344+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T18:50:08.258351733+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T18:53:41.321928849+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T18:55:44.103920181+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T19:52:21.886316756+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T20:22:22.458652656+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T20:37:25.375731478+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T20:37:40.898771695+05:00","level":"ERROR","msg":"User not found","error":null}
+{"time":"2024-08-04T20:43:24.082737476+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-04T20:43:26.366291107+05:00","level":"ERROR","msg":"Invalid token","error":"token is expired by 28s"}
+{"time":"2024-08-04T20:44:25.648151158+05:00","level":"ERROR","msg":"Invalid password"}
+{"time":"2024-08-04T20:44:53.902989732+05:00","level":"ERROR","msg":"Invalid password"}
+{"time":"2024-08-04T20:44:55.744450447+05:00","level":"ERROR","msg":"Invalid password"}
+{"time":"2024-08-04T21:37:32.984193285+05:00","level":"ERROR","msg":"Invalid password"}

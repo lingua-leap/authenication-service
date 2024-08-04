@@ -4,6 +4,7 @@ import (
 	"authentication-service/models"
 	"database/sql"
 	"errors"
+
 	"github.com/jmoiron/sqlx"
 )
 
@@ -47,7 +48,7 @@ func (a *AuthStorage) Login(login models.LoginRequest) (models.User, string, err
 	var user models.User
 	var password string
 
-	err := a.db.QueryRow("select id, username, password_hash from users where username = $1", login.Username).
+	err := a.db.QueryRow("select id, username, password_hash from users where username = $1 and deleted_at = 0", login.Username).
 		Scan(&user.ID, &user.Username, &password)
 
 	if errors.Is(err, sql.ErrNoRows) {
@@ -62,7 +63,7 @@ func (a *AuthStorage) Login(login models.LoginRequest) (models.User, string, err
 
 func (a *AuthStorage) CheckUserByEmail(email string) (bool, error) {
 	var id string
-	err := a.db.QueryRow("select id from users where email = $1", email).
+	err := a.db.QueryRow("select id from users where email = $1 and deleted_at = 0", email).
 		Scan(&id)
 	if errors.Is(err, sql.ErrNoRows) {
 		return false, nil

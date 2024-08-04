@@ -1,12 +1,16 @@
 package service
 
 import (
+	pb "authentication-service/generated/user"
 	"authentication-service/models"
 	"authentication-service/service/token"
 	"authentication-service/storage"
 	"errors"
+	"log"
 	"log/slog"
 	"time"
+
+	"github.com/redis/go-redis/v9"
 )
 
 type AuthService interface {
@@ -20,6 +24,7 @@ type AuthService interface {
 type AuthServiceImpl struct {
 	logger *slog.Logger
 	st     storage.MainStorage
+	redis  *redis.Client
 }
 
 func NewAuthService(logger *slog.Logger, st storage.MainStorage) AuthService {
@@ -97,9 +102,40 @@ func (s *AuthServiceImpl) RefreshToken(claims *token.Claims) (models.RefreshResp
 	return refreshResponse, nil
 }
 func (s *AuthServiceImpl) ResetTokenToEmail(email models.Email) (models.Message, error) {
+	if ok, err := s.st.NewAuthStorage().CheckUserByEmail(email.Email); !ok {
+		s.logger.Error("User not found", "error", err)
+		return models.Message{}, errors.New("User not found")
+	} else if err != nil {
+		s.logger.Error("Failed to check user by email", "error", err)
+		return models.Message{}, err
+	}
+
 	return models.Message{}, nil
 }
 
-func (s *AuthServiceImpl) RecoveryPassword(password models.UpdatePassword) (models.Message, error) {
-	return models.Message{}, nil
+func (s *AuthServiceImpl) RecoveryPassword(updatePassword models.UpdatePassword) (models.Message, error) {
+
+	claims, err := token.ExtractClaims(updatePassword.Token)
+	if err != nil {
+		s.logger.Error("Invalid token", "error", err)
+		return models.Message{Message: "Invalid token"}, err
+	}
+	// s.redis.Del(context.Background(), claims.Email)
+	log.Println(claims)
+	hash, err := HashPassword(updatePassword.NewPassword)
+	if err != nil {
+		s.logger.Error("Failed to hash password", "error", err)
+		return models.Message{}, err
+	}
+
+	if err := s.st.NewUserStorage().ChangePassword(&pb.ChangePasswordRequest{
+		Id:          claims.Email,
+		NewPassword: hash,
+	}); err != nil {
+		s.logger.Error("Failed to change password", "error", err)
+		return models.Message{}, err
+	}
+
+	return models.Message{Message: "Password changed!"}, nil
+
 }

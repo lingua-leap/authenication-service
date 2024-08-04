@@ -4,6 +4,7 @@ import (
 	_ "authentication-service/api/docs"
 	"authentication-service/api/handler"
 	"authentication-service/config"
+
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
@@ -43,7 +44,7 @@ func (a *api) InitRoutes() {
 		auth.POST("/register", a.handler.AuthHandler().RegisterHandler)
 		auth.POST("/login", a.handler.AuthHandler().LoginHandler)
 		auth.POST("/verify-token", a.handler.AuthHandler().VerifyTokenHandler)
-		auth.POST("/send/token", a.handler.AuthHandler().ForgotPasswordHandler)
 		auth.POST("/reset-password", a.handler.AuthHandler().ResetPasswordHandler)
+		auth.POST("/forgot-password", a.handler.AuthHandler().ForgotPasswordHandler)
 	}
 }

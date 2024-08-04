@@ -21,6 +21,10 @@ type Config struct {
 	DB_USER            string
 	DB_PASSWORD        string
 	DB_NAME            string
+	SMTP_AUTH_PASSWORD string
+	SMTP_PORT          string
+	SMTP_SERVER        string
+	SMTP_SENDER        string
 }
 
 func Load() Config {
@@ -40,6 +44,10 @@ func Load() Config {
 	config.DB_PASSWORD = cast.ToString(coalesce("DB_PASSWORD", "123321"))
 	config.SECRET_KEY_ACCESS = cast.ToString(coalesce("SECRET_KEY_ACCESS", "secret_key"))
 	config.SECRET_KEY_REFRESH = cast.ToString(coalesce("SECRET_KEY_REFRESH", "not so easy"))
+	config.SMTP_AUTH_PASSWORD = cast.ToString(coalesce("SMTP_AUTH_PASSWORD", "your_smtp_password"))
+	config.SMTP_PORT = cast.ToString(coalesce("SMTP_PORT", "443"))
+	config.SMTP_SERVER = cast.ToString(coalesce("SMTP_SERVER", "smtp.gmail.com"))
+	config.SMTP_SENDER = cast.ToString(coalesce("SMTP_SENDER", "your_email@gmail.com"))
 
 	return config
 }
