@@ -40,13 +40,13 @@ func (a *AuthenticationGINHandler) RegisterHandler(c *gin.Context) {
 	var createUser models.CreateUser
 
 	if err := c.ShouldBindJSON(&createUser); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{"error-1": err.Error()})
 		return
 	}
 
 	user, err := a.authService.Register(createUser)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, models.Errors{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error-2": err.Error()})
 		return
 	}
 
@@ -195,13 +195,13 @@ func (a *AuthenticationGINHandler) ForgotPasswordHandler(c *gin.Context) {
 func (a *AuthenticationGINHandler) ResetPasswordHandler(c *gin.Context) {
 	var updatePassword models.UpdatePassword
 	if err := c.ShouldBindJSON(&updatePassword); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error_1": err.Error()})
 		return
 	}
 
 	_, err := a.authService.RecoveryPassword(updatePassword)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error_2": err.Error()})
 		return
 	}
 

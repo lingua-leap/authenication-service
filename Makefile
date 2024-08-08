@@ -18,8 +18,8 @@ mig-down:
 mig-force:
 	migrate -path migrations -database '${DB_URL}' -verbose force 1
 
-mig-create-users:
-	migrate create -ext sql -dir db/migrations -seq auth_service_table
+mig-insert:
+	migrate create -ext sql -dir migrations -seq auth_service_table
 
 swag-gen:
 	~/go/bin/swag init -g api/router.go -o api/docs

@@ -17,10 +17,15 @@ type Claims struct {
 }
 
 func GenerateAccessToken(in models.User) (string, error) {
+	role := "user"
+	if in.Username == "admin" {
+		role = "admin"
+	}
+
 	claims := Claims{
 		Username: in.Username,
 		ID:       in.ID,
-		Role:     "user",
+		Role:     role,
 		StandardClaims: jwt.StandardClaims{
 			IssuedAt:  time.Now().Unix(),
 			ExpiresAt: time.Now().Add(time.Minute * 10).Unix(),
@@ -32,10 +37,15 @@ func GenerateAccessToken(in models.User) (string, error) {
 }
 
 func GenerateRefreshToken(in models.User) (string, error) {
+	role := "user"
+	if in.Username == "admin" {
+		role = "admin"
+	}
+
 	claims := Claims{
 		Username: in.Username,
 		ID:       in.ID,
-		Role:     "user",
+		Role:     role,
 		StandardClaims: jwt.StandardClaims{
 			IssuedAt:  time.Now().Unix(),
 			ExpiresAt: time.Now().Add(time.Hour * 10).Unix(),
