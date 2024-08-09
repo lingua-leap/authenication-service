@@ -141,3 +141,9 @@
 {"time":"2024-08-04T20:44:53.902989732+05:00","level":"ERROR","msg":"Invalid password"}
 {"time":"2024-08-04T20:44:55.744450447+05:00","level":"ERROR","msg":"Invalid password"}
 {"time":"2024-08-04T21:37:32.984193285+05:00","level":"ERROR","msg":"Invalid password"}
+{"time":"2024-08-09T15:20:33.837840244+05:00","level":"ERROR","msg":"Error connecting to database","error":"dial tcp: lookup postgres on 127.0.0.53:53: server misbehaving"}
+{"time":"2024-08-09T15:24:19.267550752+05:00","level":"ERROR","msg":"Error connecting to database","error":"dial tcp: lookup postgres on 127.0.0.53:53: server misbehaving"}
+{"time":"2024-08-09T15:27:59.996323945+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-09T15:28:16.65054804+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-09T15:32:08.777828317+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-09T15:38:11.762529152+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}

@@ -2,6 +2,7 @@ package postgres
 
 import (
 	pb "authentication-service/generated/user"
+	"log"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -16,6 +17,9 @@ func NewUserRepo(sqlx *sqlx.DB) *UserRepo {
 }
 
 func (u *UserRepo) CreateUser(in *pb.CreateUserRequest) (*pb.UserResponse, error) {
+	log.Println("asdfadsfasdfasdf")
+	log.Println("asdfadsfasdfasdf")
+	log.Println("asdfadsfasdfasdf")
 	res := &pb.UserResponse{}
 
 	err := u.db.QueryRow(`INSERT INTO users
