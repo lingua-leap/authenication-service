@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users
     password_hash   VARCHAR(255)        NOT NULL,
     full_name       VARCHAR(100),
     native_language VARCHAR(5),
-    role            VARCHAR(5) DEFAULT user,
+    role            VARCHAR(10) DEFAULT 'user',
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     deleted_at      BIGINT                   DEFAULT 0,

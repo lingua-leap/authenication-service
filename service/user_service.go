@@ -5,7 +5,6 @@ import (
 	"authentication-service/storage"
 	"context"
 	"errors"
-	"log"
 	"log/slog"
 )
 
@@ -18,7 +17,10 @@ type UserService struct {
 }
 
 func NewUserService(log *slog.Logger, storage storage.MainStorage) *UserService {
-	return &UserService{log: log}
+	return &UserService{
+		log: log,
+		st:  storage,
+	}
 }
 
 func (u *UserService) CreateUser(ctx context.Context, in *pb.CreateUserRequest) (*pb.UserResponse, error) {
@@ -29,10 +31,7 @@ func (u *UserService) CreateUser(ctx context.Context, in *pb.CreateUserRequest) 
 	}
 
 	in.Password = hashedPassword
-	log.Println("HELLO WORLD 111111111111111111")
 	res, err := u.st.NewUserStorage().CreateUser(in)
-	log.Println("HELLO WORLD 222222222222222222222")
-
 	if err != nil {
 		u.log.Error("Failed to create user", "error", err)
 		return nil, err

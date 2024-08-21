@@ -2,7 +2,6 @@ package postgres
 
 import (
 	pb "authentication-service/generated/user"
-	"log"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -17,15 +16,12 @@ func NewUserRepo(sqlx *sqlx.DB) *UserRepo {
 }
 
 func (u *UserRepo) CreateUser(in *pb.CreateUserRequest) (*pb.UserResponse, error) {
-	log.Println("asdfadsfasdfasdf")
-	log.Println("asdfadsfasdfasdf")
-	log.Println("asdfadsfasdfasdf")
 	res := &pb.UserResponse{}
 
 	err := u.db.QueryRow(`INSERT INTO users
     (username, email, password_hash, full_name, native_language)
     VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-		in.Username, in.Email, in.Password, in.FullName, in.NativeLanguage).Scan(res.Id)
+		in.Username, in.Email, in.Password, in.FullName, in.NativeLanguage).Scan(&res.Id)
 	if err != nil {
 		return nil, err
 	}

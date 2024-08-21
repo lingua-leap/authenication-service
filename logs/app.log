@@ -147,3 +147,18 @@
 {"time":"2024-08-09T15:28:16.65054804+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
 {"time":"2024-08-09T15:32:08.777828317+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
 {"time":"2024-08-09T15:38:11.762529152+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-09T16:29:25.591497484+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-09T16:44:57.815207384+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-09T16:45:08.81871316+05:00","level":"ERROR","msg":"Failed to create user","error":"pq: value too long for type character varying(5)"}
+{"time":"2024-08-09T16:45:17.588775838+05:00","level":"ERROR","msg":"Failed to create user","error":"pq: value too long for type character varying(5)"}
+{"time":"2024-08-09T16:46:08.57616924+05:00","level":"ERROR","msg":"Failed to create user","error":"pq: value too long for type character varying(5)"}
+{"time":"2024-08-09T16:46:27.394120923+05:00","level":"ERROR","msg":"Failed to create user","error":"pq: value too long for type character varying(5)"}
+{"time":"2024-08-09T16:48:26.402406288+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-09T16:49:00.963437031+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-09T16:49:04.812999147+05:00","level":"ERROR","msg":"Failed to create user","error":"sql: Scan error on column index 0, name \"id\": destination not a pointer"}
+{"time":"2024-08-09T16:59:06.515896426+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-09T16:59:09.057522659+05:00","level":"ERROR","msg":"Failed to create user","error":"pq: duplicate key value violates unique constraint \"users_username_key\""}
+{"time":"2024-08-09T16:59:34.376840016+05:00","level":"ERROR","msg":"Failed to create user","error":"sql: Scan error on column index 0, name \"id\": destination not a pointer"}
+{"time":"2024-08-09T17:00:04.074378315+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-09T17:18:03.514277363+05:00","level":"INFO","msg":"gRPC server listening on port :50050","port":50050}
+{"time":"2024-08-09T17:50:34.484581456+05:00","level":"ERROR","msg":"Failed to get all users","error":"missing destination name id in *user.UsersResponse"}

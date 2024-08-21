@@ -19,6 +19,7 @@ func NewMainStorage(db *sqlx.DB) MainStorage {
 }
 
 func (m *MainStorageImpl) NewUserStorage() UserStorage {
+
 	return postgres.NewUserRepo(m.db)
 }
 
